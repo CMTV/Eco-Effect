@@ -1,0 +1,6 @@
+| 21.02.17 | 09:11:12 |   [ERROR]   [MAIN] Не удалось получить фотографию из базы данных! [ADDITIONAL] Table 'eco_effect.photos' doesn't exist
+| 21.02.17 | 09:54:02 |   [ERROR]   [MAIN] Не удалось добавить пользователя в базу данных! [ADDITIONAL] You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '://vk.com/, 0, 0)' at line 1
+| 21.02.17 | 09:56:30 |   [ERROR]   [MAIN] Не удалось добавить пользователя в базу данных! [ADDITIONAL] Unknown column 'avatar' in 'field list'
+| 21.02.17 | 09:58:18 |   [ERROR]   [MAIN] Не удалось добавить пользователя в базу данных! [ADDITIONAL] Duplicate entry '773773' for key 'PRIMARY'
+| 21.02.17 | 09:58:47 |   [ERROR]   [MAIN] Не удалось добавить пользователя в базу данных! [ADDITIONAL] You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' 'http://eco-effect.loc/avatars/default.png', 0, 0)' at line 1
+| 21.02.17 | 10:00:53 |   [ERROR]   [MAIN] Не удалось добавить пользователя в базу данных! [ADDITIONAL] You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' 'http://eco-effect.loc/avatars/default.png', 0, 0)' at line 1

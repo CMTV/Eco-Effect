@@ -1,0 +1,11 @@
+AddDefaultCharset UTF-8
+
+# Ошибка: Страница не найдена!
+ErrorDocument 404 /error-pages/404.php
+# Ошибка: Доступ запрещен!
+ErrorDocument 403 /error-pages/403.php
+
+# Защита папки с логами
+RedirectMatch 403 /logs/
+# Защита папки с классами
+RedirectMatch 403 /classes/
