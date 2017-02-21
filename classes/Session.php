@@ -9,6 +9,7 @@ class Session {
      */
     public $user;
 
+    /** Страт PHP сессии и настройка ее базовых параметров. */
     function __construct() {
         session_start();
 
