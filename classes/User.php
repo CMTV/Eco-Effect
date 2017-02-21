@@ -139,7 +139,7 @@ class User {
      * указать параметр $avatar.
      * @param string|null $avatar Ссылка на аватару.
      */
-    public static function create_user(int $uid, string $first_name, string $second_name, string $domain, bool $has_avatar, ?string $avatar = null) {
+    public static function create_user(int $uid, string $first_name, string $second_name, string $domain, bool $has_avatar, string $avatar = AVATAR_DEFAULT_URL) {
         global $db;
 
         $first_name =     $db->real_escape_string($first_name);
@@ -150,8 +150,6 @@ class User {
 
         if($has_avatar) {
             $avatar = $db->real_escape_string($avatar);
-        } else {
-            $avatar = AVATAR_DEFAULT_URL;
         }
 
         $is_banned = $has_photo_0 = $has_photo_1 = 0;

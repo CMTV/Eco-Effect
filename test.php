@@ -1,4 +1,4 @@
 <?php
 require_once('load.php');
 
-echo User::get_vk_link(9889);
+Photo::create_photo(889, CATEGORY_TRASH_YES, 'goole.com', true, 'бади!', 'Заголsdfsdовок!', 'Описание!', 'Адерс!');

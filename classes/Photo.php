@@ -95,4 +95,48 @@ class Photo {
 
         return $photo;
     }
+
+    /**
+     * Добавление фотографии в базу данных.
+     *
+     * @param int $uid Идентификатор ВКонтакте участника конкурса.
+     * @param int $category Номинация фотографии: 0 - "Мусору НЕТ", 1 - "Мусор ЕСТЬ".
+     * @param string $photo_url Ссылка на фотографию.
+     * @param bool $has_thumbnail Есть ли у фотографии миниатюра.
+     * @param null|string $thumbnail_url Если у фотографии есть миниатюра, то указать ссылку на нее. Если миниатюры
+     * нет, то будет указана ссылка на фотографию.
+     * @param null|string $title Заголовок фотографии.
+     * @param null|string $description Описание фотографии.
+     * @param null|string $address Место съемки фотографии.
+     */
+    public static function create_photo(int $uid, int $category, string $photo_url, bool $has_thumbnail = true, ?string $thumbnail_url = null, ?string $title = null, ?string $description = null, ?string $address = null) {
+        global $db;
+
+        $photo_url =    $db->real_escape_string($photo_url);
+
+        $has_thumbnail = (int)$has_thumbnail;
+
+        if($has_thumbnail) {
+            if($thumbnail_url) {
+                $thumbnail_url = $db->real_escape_string($thumbnail_url);
+            } else {
+                $thumbnail_url = $photo_url;
+            }
+        } else {
+            $thumbnail_url = $photo_url;
+        }
+
+        $title =        $db->real_escape_string($title);
+        $description =  $db->real_escape_string($description);
+        $address =      $db->real_escape_string($address);
+
+        $db->query(
+            "INSERT INTO `photos` (`uid`, `title`, `description`, `address`, `category`, `has_thumbnail`, `thumbnail_url`, `photo_url`)"
+          . "VALUES ($uid, '$title', '$description', '$address', $category, $has_thumbnail, '$thumbnail_url', '$photo_url')"
+        );
+
+        if($db->error) {
+            Error_Handler::error('Не удалось добавить фотографию в базу данных!', $db->error);
+        }
+    }
 }
