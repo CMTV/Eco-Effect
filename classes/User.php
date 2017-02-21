@@ -1,6 +1,6 @@
 <?php
 /** Путь к стандартной аватаре участника. */
-define('AVATAR_DEFAULT_URL', SITE_URL . 'avatars/default.png');
+define('AVATAR_DEFAULT_URL', SITE_URL . 'images/default_avatar.png');
 
 /** Класс, содержащий данные участника конкурса. */
 class User {
@@ -161,6 +161,78 @@ class User {
 
         if($db->error) {
             Error_Handler::error('Не удалось добавить пользователя в базу данных!', $db->error);
+        }
+    }
+
+    /**
+     * Проверка, имеется ли пользователь в базе данных (был ли уже зарегистрирован).
+     *
+     * @param int $uid Идентификатор ВКонтакте участника конкурса.
+     * @return bool true, если пользователь был зарегистрирован и false, если это новый участник.
+     */
+    public static function is_user_exists(int $uid): bool {
+        global $db;
+
+        $result = $db->query(
+            "SELECT `uid` FROM `users` WHERE `uid` = $uid"
+        );
+
+        return ($result->num_rows != 0);
+    }
+
+    /**
+     * Проверка, забанен ли пользователь (может ли принимать участие в конкусре).
+     * Перед проверкой на бан убедитесь, что пользователь с заданным идентификатором вообще существует!
+     *
+     * @see User::is_user_exists()
+     *
+     * @param int $uid Идентификатор ВКонтакте участника конкурса.
+     * @return bool true, если пользователь забанен и false, если пользователь не забанен или его не существует.
+     */
+    public static function is_user_banned(int $uid): bool {
+        global $db;
+
+        $result = $db->query(
+            "SELECT `is_banned` FROM `users` WHERE `uid` = $uid"
+        );
+
+        if($result->num_rows == 0) {
+            return false;
+        }
+
+        return ($result->fetch_assoc())['is_banned'];
+    }
+
+    /**
+     * Обновление данных участника конкурса.
+     *
+     * @param int $uid Идентификатор ВКонтакте пользователя.
+     * @param string $first_name Имя пользователя.
+     * @param string $second_name Фамилия пользователя.
+     * @param string $domain Короткое доменное имя пользователя.
+     * @param bool $has_avatar Есть ли у пользователя аватара. При указании true необходимо в обязательном порядке
+     * указать параметр $avatar.
+     * @param string $avatar Ссылка на аватару.
+     */
+    public static function update_user(int $uid, string $first_name, string $second_name, string $domain, bool $has_avatar, string $avatar = AVATAR_DEFAULT_URL) {
+        global $db;
+
+        $first_name =   $db->real_escape_string($first_name);
+        $second_name =  $db->real_escape_string($second_name);
+        $domain =       $db->real_escape_string($domain);
+
+        $has_avatar = (int)$has_avatar;
+
+        if($has_avatar) {
+            $avatar = $db->real_escape_string($avatar);
+        }
+
+        $db->query(
+            "UPDATE `users` SET `first_name` = '$first_name', `second_name` = '$second_name', `domain` = '$domain', `has_avatar` = $has_avatar, `avatar`= '$avatar' WHERE `uid` = $uid"
+        );
+
+        if($db->error) {
+            Error_Handler::error('Не удалось обновить данные участника!', $db->error);
         }
     }
 }

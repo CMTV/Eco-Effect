@@ -4,3 +4,6 @@
 | 21.02.17 | 09:58:18 |   [ERROR]   [MAIN] Не удалось добавить пользователя в базу данных! [ADDITIONAL] Duplicate entry '773773' for key 'PRIMARY'
 | 21.02.17 | 09:58:47 |   [ERROR]   [MAIN] Не удалось добавить пользователя в базу данных! [ADDITIONAL] You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' 'http://eco-effect.loc/avatars/default.png', 0, 0)' at line 1
 | 21.02.17 | 10:00:53 |   [ERROR]   [MAIN] Не удалось добавить пользователя в базу данных! [ADDITIONAL] You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' 'http://eco-effect.loc/avatars/default.png', 0, 0)' at line 1
+| 21.02.17 | 12:06:48 |   [ERROR]   [MAIN] Не удалось авторизоваться с помощью ВКонтакте! [ADDITIONAL] client_secret is undefined
+| 21.02.17 | 12:07:10 |   [ERROR]   [MAIN] Не удалось авторизоваться с помощью ВКонтакте! [ADDITIONAL] client_secret is undefined
+| 21.02.17 | 12:23:58 |   [ERROR]   [MAIN] Не удалось авторизоваться с помощью ВКонтакте! [ADDITIONAL] User authorization failed: invalid access_token (4).
