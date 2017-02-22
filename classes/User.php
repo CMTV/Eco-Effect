@@ -63,6 +63,40 @@ class User {
      */
     public $photo_1 = null;
 
+    public function loaded_photo(int $category) {
+        global $db;
+
+        if($category == CATEGORY_TRASH_NO)
+            $db->query("UPDATE `users` SET `has_photo_0` = 1 WHERE `uid` = $this->uid");
+        elseif($category == CATEGORY_TRASH_YES)
+            $db->query("UPDATE `users` SET `has_photo_1` = 1 WHERE `uid` = $this->uid");
+    }
+
+    /**
+     * Имеется ли у участника фотография в заданной номинации.
+     *
+     * @param User|int $user Объект или идентификатор ВКонтакте пользователя, для которого осуществляется проверка.
+     * @param int $category Идентификатор номинации: 0 - Мусору "НЕТ", 1 - Мусор "ЕСТЬ".
+     *
+     * @return bool|null Возвращает true, если фотография в данной номинации имеется у участника, false, если нет.
+     * Возвращает null, если не удалось найти пользователя с таким uid или идентификатор номинации некорректный.
+     */
+    public static function has_photo($user, int $category): ?bool {
+        if(is_int($user)) {
+            $user = self::get_user($user);
+        }
+
+        if(!$user) { return null; }
+
+        if($category == CATEGORY_TRASH_NO) {
+            return $user->has_photo_0;
+        } elseif($category == CATEGORY_TRASH_YES) {
+            return $user->has_photo_1;
+        }
+
+        return null;
+    }
+
     /**
      * Получение ссылки на VK профиль пользователя.
      *
@@ -74,17 +108,13 @@ class User {
     public static function get_vk_link($user): ?string {
         $link = 'https://vk.com/';
 
-        if($user instanceof User) {
-            return $link . $user->domain;
-        }
-
         if(is_int($user)) {
-            if($user = self::get_user($user)) {
-                return $link . $user->domain;
-            }
+            $user = self::get_user($user);
         }
 
-        return null;
+        if(!$user) { return null; }
+
+        return $link . $user->domain;
     }
 
     /**

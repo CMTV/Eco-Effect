@@ -18,7 +18,7 @@ $db->query(
  * Создание таблицы фотографий.
  */
 $db->query(
-    "CREATE TABLE `eco_effect`.`photos` ( `id` INT NOT NULL AUTO_INCREMENT , `uid` INT NOT NULL , `title` VARCHAR(255) NULL , `description` TEXT NULL , `address` VARCHAR(255) NULL , `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `category` TINYINT NOT NULL , `has_thumbnail` BOOLEAN NOT NULL , `thumbnail_url` TEXT NULL , `photo_url` TEXT NOT NULL , `likes` INT NOT NULL DEFAULT '0' , PRIMARY KEY (`id`), INDEX (`uid`)) ENGINE = InnoDB;
+    "CREATE TABLE `eco_effect`.`photos` ( `id` INT NOT NULL AUTO_INCREMENT , `uid` INT NOT NULL , `title` VARCHAR(255) NULL , `description` TEXT NULL , `has_marker` BOOLEAN NOT NULL , `latitude` FLOAT NULL DEFAULT NULL , `longitude` FLOAT NULL DEFAULT NULL , `address` VARCHAR(255) NULL , `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `category` TINYINT NOT NULL , `has_thumbnail` BOOLEAN NOT NULL , `thumbnail_url` TEXT NULL , `photo_url` TEXT NOT NULL , `likes` INT NOT NULL DEFAULT '0' , PRIMARY KEY (`id`), INDEX (`uid`)) ENGINE = InnoDB;
 ");
 
 $db->close();

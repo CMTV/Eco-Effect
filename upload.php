@@ -15,19 +15,49 @@ if(!$session->is_authorized()) {
 }
 
 // =====================================================================================================================
-// Получение и проверка данных от формы.
+// Получение и проверка данных от формы. @todo Протестировать на различных данных, когда форма будет готова!
 // =====================================================================================================================
 $category = null;
 if(((int)$_POST['category']) != CATEGORY_TRASH_NO && ((int)$_POST['category']) != CATEGORY_TRASH_YES) {
     Error_Handler::forbid();
 }
-$category = (int)$_POST['category'];
+$category =     (int)$_POST['category'];
 
+$title =        (!empty($_POST['title'])?:null);
+$description =  (!empty($_POST['description'])?:null);
+
+$has_marker = null;
+$latitude = null;
+$longitude = null;
+if(!is_null($_POST['has_marker'])) {
+    $has_marker = (bool)$_POST['has_marker'];
+
+    if($has_marker) {
+        if(is_null($_POST['latitude']) || is_null($_POST['longitude'])) {
+            Error_Handler::error('Маркер включен, а его координаты не передаются!', null, false);
+        }
+
+        $latitude = (float)$_POST['latitude'];
+        $longitude = (float)$_POST['longitude'];
+    } else {
+        if(!is_null($_POST['latitude']) || !is_null($_POST['longitude'])) {
+            Error_Handler::error('Маркер отключен, а его координаты передаются!', null, false);
+        }
+    }
+} else {
+    $has_marker = false;
+    if(!is_null($_POST['latitude']) || !is_null($_POST['longitude'])) {
+        Error_Handler::error('Маркер отключен, а его координаты передаются!', null, false);
+    }
+}
 
 // =====================================================================================================================
 // Проверка на то, что фотография уже была загружена.
 // =====================================================================================================================
-
+if(User::has_photo($current_user, $category)) {
+    Error_Handler::error(
+        'У вас уже есть фотография в данной номинации! Удалите предыдущую, прежде чем загружать новую!', null, false);
+}
 
 // =====================================================================================================================
 // Проверка загруженного файла.
@@ -87,12 +117,32 @@ require(ABSPATH . 'classes/Amazon.php');
 
 $amazon = new Amazon();
 
+$has_thumbnail = false;
+$thumbnail_url = null;
 if($width > THUMBNAIL_WIDTH) {
+    $has_thumbnail = true;
     $thumbnail_url = $amazon->upload_thumbnail($category, Utils::make_thumbnail($_FILES['photo']['tmp_name']),
         Utils::get_image_extension($photo_type));
-    echo '<img src="' . $thumbnail_url . '">';
 }
 
 $photo_url = $amazon->upload_photo($category, $_FILES['photo']['tmp_name'], Utils::get_image_extension($photo_type));
 
-echo '<img src="' . $photo_url . '">';
+// =====================================================================================================================
+// Загрузка данных фотографии в базу данных.
+// =====================================================================================================================
+Photo::create_photo(
+    $current_user->uid,
+    $category,
+    $photo_url,
+    $has_thumbnail,
+    $thumbnail_url,
+    $has_marker,
+    $latitude,
+    $longitude,
+    $title,
+    $description
+);
+$current_user->loaded_photo($category);
+$session->sync_user();
+
+Redirect::redirect_to(REDIRECT_PROFILE);

@@ -56,7 +56,7 @@ class Amazon {
         try {
             $upload_result = $this->client->putObject([
                 'Bucket' =>     $bucket,
-                'Key'   =>      $folder . $current_user->uid . '_' . $category . '.' . $extension,
+                'Key'   =>      $folder . $current_user->uid . '_' . $category . '_' . time() . '.' . $extension,
                 'SourceFile' => $path_to_file,
                 'ACL'    =>     'public-read'
             ]);
@@ -86,7 +86,7 @@ class Amazon {
         try {
             $upload_result = $this->client->putObject([
                 'Bucket' =>     $bucket,
-                'Key'   =>      $folder . $current_user->uid . '_' . $category . '_thumb.' . $extension,
+                'Key'   =>      $folder . $current_user->uid . '_' . $category . '_thumb_' . time() . '.' . $extension,
                 'Body' =>       $image_data,
                 'ACL'    =>     'public-read'
             ]);

@@ -14,3 +14,9 @@ if($session->is_admin()) {
 ?>
 
 <a href="<?php echo VK::vk_authorize_link(); ?>">Войти чере ВКонтакте</a>
+
+<?php
+
+echo (int)(User::has_photo($current_user, CATEGORY_TRASH_YES));
+
+?>

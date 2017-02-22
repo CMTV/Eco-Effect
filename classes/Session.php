@@ -16,7 +16,7 @@ class Session {
         $_SESSION['signed'] = $_SESSION['signed'] ?: false;
 
         if($_SESSION['current_user'] instanceof User) {
-            $this->user = $_SESSION['current_user'];
+            $this->user = User::get_user($_SESSION['current_user']->uid);
         }
     }
 
@@ -61,5 +61,13 @@ class Session {
         }
 
         session_destroy();
+    }
+
+    /** Синхронизация данных текущего участника с данными в базе данных. */
+    public function sync_user() {
+        global $current_user;
+
+        if($this->is_authorized())
+            $this->user = $current_user = User::get_user($_SESSION['current_user']->uid);
     }
 }
