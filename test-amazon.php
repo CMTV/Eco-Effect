@@ -3,22 +3,33 @@
 
 require_once('load.php');
 
-require_once(ABSPATH . 'amazon/aws.phar');
+?>
+<!doctype>
+<html>
+<head>
+    <title>Amazon загрузка!</title>
+</head>
+<body>
 
-use Aws\S3\S3Client;
+<form enctype="multipart/form-data" action="upload.php" method="post">
+    <!-- Идентификатор номинации. -->
+    <input type="hidden" name="category" value="<?php echo CATEGORY_TRASH_NO; ?>">
 
-// Instantiate an Amazon S3 client.
-$s3 = new S3Client([
-    'version' => 'latest',
-    'region'  => 'us-east-1',
-    'credentials' => [
-        'key' =>    AWS_ACCESS_KEY_ID,
-        'secret' => AWS_SECRET_ACCESS_KEY
-    ]
-]);
+    <!-- Максимальный размер загружаемой фотографии. -->
+    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MAX_IMG_SIZE; ?>" />
 
-$s3->putObject([
-    'Bucket' => 'eco-effect',
-    'Key'    => 'image.png',
-    'Body'   => 'some-body',
-]);
+    <!-- Поле загрузки фотографии. -->
+    <input type="file" name="photo" accept="image/png, image/gif, image/jpeg">
+
+    <!-- Поле заголовка фотографии. -->
+    <input type="text" name="title" placeholder="Название фотографии...">
+
+    <!-- Область описания фотографии. -->
+    <textarea name="description"></textarea>
+
+    <button type="button">Отмена</button>
+    <button type="submit">Загрузить фото!</button>
+</form>
+
+</body>
+</html>
