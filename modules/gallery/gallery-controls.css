@@ -1,0 +1,84 @@
+/* ================================================================================================================== */
+/* Панель управления галереей. */
+/* ================================================================================================================== */
+
+/* Контейнер панели управления. */
+#gallery-controller {
+    height: 50px;
+    background: #fff;
+    border-radius: 4px;
+    display: flex;
+}
+
+/* Активиронные кнопка/поле */
+.gc-button.gc-active {
+    background: rgba(0, 172, 53, 0.1);
+}
+.gc-button.gc-active span, .gc-button.gc-active i {
+    color: #00AC35;
+}
+.gc-search-field.gc-active, .gc-search-field-label.gc-active i {
+    color: #00AC35;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Поле поиска участников. */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/* Само поле поиска. */
+.gc-search-field {
+    outline: none;
+    height: 48px;
+    border: 1px none #DEDEDE;
+    border-right-style: solid;
+    font-size: 100%;
+    transition: color 0.15s;
+    flex: 1;
+}
+
+/* Иконка поиска. */
+.gc-search-field-icon {
+    color: #939393;
+    margin: 1em;
+    transition: color 0.15s;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Кнопки сортировки участников. */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/* Общий стиль кнопки. */
+.gc-button {
+    border-right: 1px solid #DEDEDE;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 17px;
+    text-align: center;
+    transition: background 0.15s;
+    outline: none;
+    width: 126px;
+}
+.gc-button i, .gc-button span {
+    transition: color 0.15s;
+}
+.gc-button span {
+    padding-left: 10px;
+    color: #939393;
+}
+.gc-button i {
+    color: #939393;
+}
+
+/* Стиль кнопки при наведении */
+.gc-button:hover {
+    cursor: pointer;
+}
+.gc-button:hover span, .gc-button:hover i {
+    color: #00AC35;
+}
+
+/* Стиль последней кнопки */
+.gc-button:last-child {
+    border-right: none;
+    padding: 0 25px;
+}

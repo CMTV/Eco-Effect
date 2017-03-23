@@ -1,0 +1,93 @@
+/* ================================================================================================================== */
+/* Шапка сайта - Лендинг. */
+/* ================================================================================================================== */
+
+/* ======================================================================================= */
+/* Лендинг. */
+/* ======================================================================================= */
+.take-part-container {
+    padding-top: 20px;
+    text-align: center;
+}
+
+.landing-title {
+    font-size: 250%;
+    padding-bottom: 20px;
+}
+
+#take-part-container {
+    height: 100px;
+    vertical-align: baseline;
+}
+
+#take-part {
+    font-family: OpenSans, sans-serif;
+    display: block;
+    background: #00AC35;
+    width: 250px;
+    padding: 20px;
+    margin: 20px auto 60px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 150%;
+    transition: 0.15s background;
+}
+
+#take-part:hover {
+    background: #00BE39;
+}
+
+#take-part i {
+    transition: 0.15s transform;
+}
+#take-part:hover i, #take-part:focus i {
+    transform: scale(1.2);
+}
+
+#take-part:focus {
+    background: #00A030;
+}
+
+#take-part span {
+    padding-left: 15px;
+}
+
+/* ======================================================================================= */
+/* Статистика сайта. */
+/* ======================================================================================= */
+/* Контейнер статистики. */
+.header-stats {
+    margin: 10px auto;
+    display: flex;
+    justify-content: space-around;
+}
+
+.stats-container {
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.stats-icon {
+    font-size: 300%;
+    color: #00AC35;
+    opacity: 0.6;
+    margin-right: 15px;
+}
+
+.stats-content {
+    position: relative;
+}
+
+.stats-num {
+    font-size: 170%;
+    color: #00AC35;
+}
+
+.stats-label {
+    font-size: 90%;
+    color: #939393;
+    position: relative;
+    top: -5px;
+}

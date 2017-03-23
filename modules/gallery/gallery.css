@@ -1,0 +1,223 @@
+/* ================================================================================================================== */
+/* Галерея. */
+/* ================================================================================================================== */
+
+/* Сам блок галереи. */
+#gallery {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* Колонки галереи. */
+#gallery .gallery_0, #gallery .gallery_1 {
+    width: 49%;
+}
+
+/* ================================================================================================================== */
+/* Обозначения номинаций. */
+/* ================================================================================================================== */
+.gallery-title {
+    padding: 10px;
+    text-align: center;
+    font-size: 150%;
+    color: #fff;
+    border-radius: 3px;
+    margin-top: 15px;
+}
+.gallery_0 .gallery-title {
+    background: #00AC35;
+}
+.gallery_1 .gallery-title {
+    background: #ff5b47;
+}
+
+.gallery-title-arrow {
+    width: 0;
+    height: 0;
+    display: block;
+    border-style: solid;
+    margin: 0 auto;
+    border-width: 35px 100px 0 100px;
+}
+
+.gallery_0 .gallery-title-arrow {
+    border-color: #00ac34 transparent transparent transparent;
+}
+.gallery_1 .gallery-title-arrow {
+    border-color: #ff5b47 transparent transparent transparent;
+}
+
+/* ================================================================================================================== */
+/* Разделитель галереи с датой. */
+/* ================================================================================================================== */
+
+/* Сам разделитель. */
+.date-sep {
+    display: flex;
+    flex-basis: 100%;
+    align-items: center;
+    color: #6a6a6a;
+    margin: 8px 0px;
+}
+.date-sep::before,
+.date-sep::after {
+    content: "";
+    flex-grow: 1;
+    height: 1px !important;
+    font-size: 0;
+    line-height: 0;
+    margin: 0 8px;
+}
+
+/* Цвет разделителя в зависимости от номинации галереи. */
+.gallery_0 .date-sep {
+    color: #00AC35;
+}
+.gallery_0 .date-sep::before,
+.gallery_0 .date-sep::after {
+    background: #00AC35;
+}
+.gallery_1 .date-sep {
+    color: #ff5b47;
+}
+.gallery_1 .date-sep::before,
+.gallery_1 .date-sep::after {
+    background: #ff5b47;
+}
+
+/* ================================================================================================================== */
+/* Фотография участника в галерее. */
+/* ================================================================================================================== */
+
+/* Сам блок фотографии участника. */
+.gallery-photo {
+    border-radius: 3px;
+    border: 1px solid #DEDEDE;
+    box-shadow: 0 1px 2px 0 rgba(1, 1, 1, 0.09);
+    margin: 1.25em 0;
+    background: #fff;
+    display: none;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Фотография участника. */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/* Контейнер фотографии участника. */
+.gallery-photo .photo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 488px;
+    min-height: 275px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    overflow: hidden;
+}
+.gallery-photo .photo-container {
+    cursor: pointer;
+}
+
+/* Значок загрузки фотографии. */
+.gallery-photo .loading-spinner {
+    font-size: 600%;
+    max-width: 100%;
+    max-height: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.gallery_0 .loading-spinner {
+    color: #00AC35;
+}
+.gallery_1 .loading-spinner {
+    color: #ff5b47;
+}
+
+/* Сама фотография участника. */
+.gallery-photo .photo-container .photo-img {
+    display: none;
+    max-width: 100%;
+    max-height: 350px;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Данные фотографии участника. */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/* Сам блок данных. */
+.gallery-photo .photo-data {
+    border-top: 1px solid #DEDEDE;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    background: #fff;
+    display: flex;
+    align-items: flex-start;
+    padding: 0.7em;
+}
+
+/* Аватара участника. */
+.gallery-photo .author-avatar {
+    border-radius: 50%;
+    display: block;
+}
+
+/* Контейнер заголовка фотографии и имени автора. */
+.gallery-photo .photo-author-text {
+    flex: 1;
+    margin-left: 10px;
+}
+
+/* Заголовок фотографии. */
+.gallery-photo .photo-author-text h2.title {
+    margin: 3px 0 0;
+    font-size: 120%;
+}
+
+/* Автор фотографии. */
+.gallery-photo .photo-author-text a.author {
+    color: #939393;
+    font-size: 95%;
+    text-decoration: none;
+}
+.gallery-photo .photo-author-text a.author:hover {
+    text-decoration: underline;
+}
+
+/* Автор фотографии в случае, когда заголовок отсутствует. */
+.gallery-photo .photo-author-text h2.author {
+    margin: 13px 0 0;
+    font-size: 120%;
+}
+.gallery-photo .photo-author-text h2.author a {
+    color: #333;
+    text-decoration: none;
+}
+.gallery-photo .photo-author-text h2.author a:hover {
+    text-decoration: underline;
+}
+
+/* Виджет голосования. */
+.gallery_0 .vote-photo-widget {
+    filter: hue-rotate(-74deg) saturate(200%) brightness(100%);
+}
+.gallery_1 .vote-photo-widget {
+    filter: hue-rotate(-215deg) saturate(200%) brightness(100%);
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Вертикальное отражение данных фотографий в номинации "Мусор ЕСТЬ". */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/* Отражение всех элементов данных. */
+.gallery_1 .gallery-photo .photo-data {
+    flex-direction: row-reverse;
+}
+
+/* Центровка текста заголовка/автора по правой границе. */
+.gallery_1 .gallery-photo .photo-author-text {
+    margin-left: 0;
+    margin-right: 10px;
+    text-align: right;
+}

@@ -1,0 +1,77 @@
+/* ================================================================================================================== */
+/* Индикатор состояния галереи. */
+/* ================================================================================================================== */
+
+/* Контейнер индикатора. */
+.gallery-indicator {
+    width: 65%;
+    margin: 20px auto 0;
+    height: 150px;
+    border-radius: 3px;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Цветовые стили индикатора. */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/* Стиль по умолчанию. */
+.gallery-indicator div {
+    margin: 20px auto 0;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.7em;
+}
+.gallery-indicator div i {
+    font-size: 200%;
+}
+.gallery-indicator div span {
+    margin-left: 0.7em;
+}
+
+/* Зеленый стиль. */
+.gallery-indicator.green div {
+    background: #E8FFE7;
+    border: 1px solid #00AC35;
+    color: #00AC35;
+    font-size: 150%;
+}
+
+/* Красный стиль. */
+.gallery-indicator.red div {
+    background: #FFE7E4;
+    border: 1px solid #ff5b47;
+    color: #ff5b47;
+    font-size: 150%;
+}
+
+/* Желтый стиль. */
+.gallery-indicator.yellow div {
+    background: #FFF6E4;
+    border: 1px solid #e5a222;
+    color: #e5a222;
+    font-size: 150%;
+}
+
+/* Стиль загрузки. */
+.gallery-indicator.loading div {
+    background: transparent;
+    animation: gallery-indicator-loading 2s infinite;
+    font-size: 150%;
+}
+
+/* Анимация индикатора со стилем загрузки. */
+@keyframes gallery-indicator-loading {
+    0%   {color:#00AC35;}
+    50%  {color:#ff5b47;}
+    100%   {color:#00AC35;}
+}
+
+/* Стиль нет больше фотографий. */
+.gallery-indicator.no-more div {
+    background: #FFF6E4;
+    border: 1px solid #e5a222;
+    color: #e5a222;
+    font-size: 150%;
+}

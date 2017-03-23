@@ -1,8 +1,20 @@
 <?php
 /** Выход с сайта. Завершение сессии. */
 
-require_once('load.php');
+session_start();
 
-$session->logout();
+session_unset();
 
-Redirect::redirect_to(REDIRECT_INDEX);
+if(ini_get('session.use_cookies')) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
+}
+
+session_destroy();
+
+header('Location: ' . '/');
+
+die();

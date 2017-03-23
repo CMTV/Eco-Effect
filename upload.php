@@ -1,6 +1,10 @@
 <?php
 /** Скрипт загрузки файлов на Amazon S3. */
 
+/** Типы построения формы. */
+define('PHOTO_ADD', 0);
+define('PHOTO_EDIT', 1);
+
 /** Допустимые расширения загружаемых файлов. */
 define('ALLOWED_IMAGE_TYPES', [
     IMAGETYPE_PNG,
@@ -15,40 +19,71 @@ if(!$session->is_authorized()) {
 }
 
 // =====================================================================================================================
-// Получение и проверка данных от формы. @todo Протестировать на различных данных, когда форма будет готова!
+// Получение и проверка данных от формы.
 // =====================================================================================================================
-$category = null;
-if(((int)$_POST['category']) != CATEGORY_TRASH_NO && ((int)$_POST['category']) != CATEGORY_TRASH_YES) {
-    Error_Handler::forbid();
+
+/* --------------------------------------------------------------------------------------- */
+/* Техническая информация от сервера. */
+/* --------------------------------------------------------------------------------------- */
+if($_POST['category'] != '0' && $_POST['category'] != '1') {
+    Error_Handler::error('Некорретное заполнение формы!', 'Не передано поле category!', false);
 }
-$category =     (int)$_POST['category'];
 
-$title =        (!empty($_POST['title'])?:null);
-$description =  (!empty($_POST['description'])?:null);
+$category = intval($_POST['category']);
 
-$has_marker = null;
-$latitude = null;
-$longitude = null;
-if(!is_null($_POST['has_marker'])) {
-    $has_marker = (bool)$_POST['has_marker'];
+if($_POST['type'] != '0' && $_POST['type'] != '1') {
+    Error_Handler::error('Некорретное заполнение формы!', 'Не передано поле type!', false);
+}
 
-    if($has_marker) {
-        if(is_null($_POST['latitude']) || is_null($_POST['longitude'])) {
-            Error_Handler::error('Маркер включен, а его координаты не передаются!', null, false);
-        }
+$type = intval($_POST['type']);
 
-        $latitude = (float)$_POST['latitude'];
-        $longitude = (float)$_POST['longitude'];
+$photo_id = null;
+if($type ==PHOTO_EDIT) {
+    if(!is_numeric($_POST['photo-id'])) {
+        Error_Handler::error('Не указан идентификатор редактируемой фотографии.', null, false);
     } else {
-        if(!is_null($_POST['latitude']) || !is_null($_POST['longitude'])) {
-            Error_Handler::error('Маркер отключен, а его координаты передаются!', null, false);
-        }
+        $photo_id = intval($_POST['photo-id']);
     }
-} else {
+}
+
+/* --------------------------------------------------------------------------------------- */
+/* Маркер на карте: широта и долгота. */
+/* --------------------------------------------------------------------------------------- */
+if(!is_numeric($_POST['latitude']) || !is_numeric($_POST['longitude'])) {
     $has_marker = false;
-    if(!is_null($_POST['latitude']) || !is_null($_POST['longitude'])) {
-        Error_Handler::error('Маркер отключен, а его координаты передаются!', null, false);
+    $latitude = $longitude = null;
+} else {
+    $has_marker = true;
+    $latitude = floatval($_POST['latitude']);
+    $longitude = floatval($_POST['longitude']);
+}
+
+/* --------------------------------------------------------------------------------------- */
+/* Дополнительные данные к фотографии: заголовок и описание. */
+/* --------------------------------------------------------------------------------------- */
+$title =        ( trim($_POST['title']) ?: null );
+$description =  ( trim($_POST['description']) ?: null );
+
+// =====================================================================================================================
+// Обновление данных фотографии.
+// =====================================================================================================================
+if($type == PHOTO_EDIT) {
+    if(!User::has_photo($current_user, $category)) {
+        Error_Handler::error('У вас нет фотографии в этой номинации! Нечего редактировать!', null, false);
     }
+
+    Photo::edit_photo($photo_id, [
+        'has_marker'    => $has_marker,
+        'latitude'      => $latitude,
+        'longitude'     => $longitude,
+        'title'         => $title,
+        'description'   => $description
+    ]);
+
+    $current_user->loaded_photo($category);
+    $session->sync_user();
+
+    Redirect::redirect_to(REDIRECT_INDEX);
 }
 
 // =====================================================================================================================
@@ -119,10 +154,11 @@ $amazon = new Amazon();
 
 $has_thumbnail = false;
 $thumbnail_url = null;
+$thumbnail = null;
 if($width > THUMBNAIL_WIDTH) {
     $has_thumbnail = true;
-    $thumbnail_url = $amazon->upload_thumbnail($category, Utils::make_thumbnail($_FILES['photo']['tmp_name']),
-        Utils::get_image_extension($photo_type));
+    $thumbnail = Utils::make_thumbnail($_FILES['photo']['tmp_name']);
+    $thumbnail_url = $amazon->upload_thumbnail($category, $thumbnail['image'], Utils::get_image_extension($photo_type));
 }
 
 $photo_url = $amazon->upload_photo($category, $_FILES['photo']['tmp_name'], Utils::get_image_extension($photo_type));
@@ -130,19 +166,26 @@ $photo_url = $amazon->upload_photo($category, $_FILES['photo']['tmp_name'], Util
 // =====================================================================================================================
 // Загрузка данных фотографии в базу данных.
 // =====================================================================================================================
-Photo::create_photo(
-    $current_user->uid,
-    $category,
-    $photo_url,
-    $has_thumbnail,
-    $thumbnail_url,
-    $has_marker,
-    $latitude,
-    $longitude,
-    $title,
-    $description
-);
+$new_photo = new Photo();
+
+$new_photo->uid =                   $current_user->uid;
+$new_photo->category =              $category;
+$new_photo->photo_url =             $photo_url;
+$new_photo->has_thumbnail =         $has_thumbnail;
+$new_photo->thumbnail_url =         $thumbnail_url;
+$new_photo->has_marker =            $has_marker;
+$new_photo->latitude =              $latitude;
+$new_photo->longitude =             $longitude;
+$new_photo->title =                 $title;
+$new_photo->description =           $description;
+$new_photo->photo_size->width =     $width;
+$new_photo->photo_size->height =    $height;
+$new_photo->thumb_size->width =     $thumbnail['size']['width'];
+$new_photo->thumb_size->height =    $thumbnail['size']['height'];
+
+Photo::create_photo($new_photo);
+
 $current_user->loaded_photo($category);
 $session->sync_user();
 
-Redirect::redirect_to(REDIRECT_PROFILE);
+Redirect::redirect_to(REDIRECT_INDEX);

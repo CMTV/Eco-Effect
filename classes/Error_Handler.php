@@ -28,7 +28,8 @@ class Error_Handler {
      * @param bool $add_to_log Нужно ли добавить сообщение об ошибке в лог ошибок.
      *
      * @return string Возвращает JSON массив, состоящий из двух элементов: error = 1 || 0 и
-     * сообщения об ошибке error_msg.
+     * сообщения об ошибке error_msg. Если были сообщены дополнительные сведения, то будет заполнено и поле
+     * error_msg_additional.
      */
     public static function ajax_error(?string $message = null, ?string $additional = null, bool $add_to_log = true): string {
         if($add_to_log) {
@@ -38,6 +39,7 @@ class Error_Handler {
         $error_array = [];
         $error_array['error'] = true;
         $error_array['error_msg'] = $message;
+        $error_array['error_msg_additional'] = null;
 
         if(IS_DEBUG_MODE) {
             $error_array['error_msg_additional'] = $additional;

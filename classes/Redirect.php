@@ -2,8 +2,8 @@
 /** Ссылка на главную страницу сайта. */
 define('REDIRECT_INDEX', SITE_URL);
 
-/** Ссылка на профиль участника. */
-define('REDIRECT_PROFILE', SITE_URL . 'profile.php');
+/** Ссылка на окончание сессии. */
+define('REDIRECT_LOGOUT', SITE_URL . 'logout.php');
 
 /** Работа с перенаправлениями на сайте. */
 class Redirect {
@@ -16,10 +16,11 @@ class Redirect {
      *
      * @todo Добавить больше перенаправлений.
      *
-     * @param string $destination
+     * @param string $destination Адрес страницы, на которую будет произведена переадресация.
+     * @param string|null $msg Дополнительное сообщение принимающей странице.
      */
-    public static function redirect_to(string $destination) {
-        header('Location: ' . $destination);
+    public static function redirect_to(string $destination, ?string $msg = null) {
+        header('Location: ' . $destination . '?msg=' . $msg);
         die();
     }
 }

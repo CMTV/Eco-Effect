@@ -1,0 +1,697 @@
+/* ================================================================================================================== */
+/* Окна форм добавления/редактирования фотографии. */
+/* ================================================================================================================== */
+
+/* Контейнер все окон форм. */
+.profile-form-windows {
+    width: 100%;
+    height: 352px;
+    position: relative;
+    top: -27px;
+}
+
+/* Отдельное окно формы. */
+.profile-form-window {
+    width: calc(100% - 8px);
+    height: calc(100% - 8px);
+    position: relative;
+    display: none;
+    border-radius: 6px;
+    border: 4px dashed #000;
+}
+
+/* Номинация "Мусору НЕТ" */
+.profile-form-0 .profile-form-window {
+    color: #00AC35;
+    background: rgba(0, 172, 53, 0.11);
+    border-color: #00AC35;
+}
+
+/* Номинация "Мусор ЕСТЬ" */
+.profile-form-1 .profile-form-window {
+    color: #ff5b47;
+    background: rgba(255, 91, 71, 0.07);
+    border-color: #ff5b47;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Окно формы: Выбор фотографии для загрузки. */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/* Само окно. */
+.window-select-photo {
+    width: calc(100% - 48px);
+    height: calc(100% - 48px);
+    display: flex; /* flex */
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Иконка загрузки в облако. */
+.window-select-photo .upload-icon {
+    font-size: 550%;
+    position: relative;
+    transition: top 0.15s;
+    top: 0;
+}
+
+/* Смещение иконки при наведении мышки и изменение курсора. */
+.window-select-photo.window-select-photo-active .photo-input {
+    cursor: pointer;
+}
+.window-select-photo.window-select-photo-active .upload-icon {
+    top: -8px;
+}
+
+/* Пояснительный текст к окну. */
+.window-select-photo div {
+    margin: 4px 0;
+    font-size: 130%;
+}
+
+/* Выделение жирным текстом. */
+.window-select-photo div span {
+    font-family: OpenSansBold, sans-serif;
+}
+
+/* Невидимый оверлей для загрузки фотографии. */
+.window-select-photo .photo-input {
+    margin: 0;  padding: 0;  display: block;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 1000;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Окно формы: Указание места на карте. */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/* Само окно. */
+.window-map {
+    width: calc(100% - 48px);
+    height: calc(100% - 48px);
+    display: none; /* flex */
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Иконка указания позиции на карте. */
+.window-map .map-icon {
+    font-size: 550%;
+    position: relative;
+    transition: top 0.15s;
+    top: 0;
+}
+
+/* Пояснительный текст к окну. */
+.window-map div {
+    margin-top: 15px;
+    font-size: 130%;
+}
+
+/* Контейнер кнопок решения, указывать ли маркер на карте. */
+.window-map .decide-buttons {
+    display: flex;
+    font-size: 110%;
+    justify-content: center;
+}
+
+/* Кнопки решения, указывать ли маркер на карте. */
+.window-map .decide-button {
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 110%;
+    padding: 15px;
+    transition: background 0.15s;
+}
+.window-map .decide-button:hover {
+    cursor: pointer;
+}
+
+/* Кнопка отказа от указания маркера. */
+.window-map .decide-button.skip {
+    background: #a3a3a3;
+    margin-right: 10px;
+}
+
+/* Кнопка открытия карты для указания маркера в зависимости от номинации. */
+.profile-form-0 .window-map .decide-button.specify {
+    background: #00AC35;
+    width: 250px;
+}
+.profile-form-1 .window-map .decide-button.specify {
+    background: #ff5b47;
+    width: 250px;
+}
+
+/* Наведение и фокус на кнопке указания маркера на карте. */
+.profile-form-0 .window-map .decide-button.specify:hover {
+    background: #00BE39;
+}
+.profile-form-0 .window-map .decide-button.specify:focus {
+    background: #00A030;
+}
+.profile-form-1 .window-map .decide-button.specify:hover {
+    background: #FF7F6E;
+}
+.profile-form-1 .window-map .decide-button.specify:focus {
+    background: #E76C5B;
+}
+
+/* Наведение и фокус на кнопке пропуска указания маркера на карте. */
+.window-map .decide-button.skip:hover {
+    background: #b3b3b3;
+}
+.window-map .decide-button.skip:focus {
+    background: #979797;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Окно формы: Данные фотографии. */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/* Само окно. */
+.window-photo-data {
+    width: calc(100% - 48px);
+    height: calc(100% - 48px);
+    display: none; /* flex */
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    overflow: hidden;
+}
+
+/* Лейблы заголовка и описания фотографии. */
+.photo-data-label {
+    font-size: 110%;
+    margin-bottom: 12px;
+    display: block;
+}
+.photo-data-label:last-of-type {
+    margin-top: 15px;
+}
+
+/* Общий стиль для заголовка и описания  */
+.photo-data-title, .photo-data-description {
+    outline: none;
+    border: 1px solid #000;
+    font-size: 90%;
+    padding: 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 83.9%;
+}
+
+/* Поле заголовка фотографии. */
+.photo-data-title.cat_0 {
+    border-color: #00AC35;
+}
+.photo-data-title.cat_1 {
+    border-color: #ff5b47;
+}
+
+/* Область описания фотографии. */
+.photo-data-description {
+    font-family: OpenSans, sans-serif;
+    resize: none;
+}
+.photo-data-description::-webkit-scrollbar {
+    visibility: hidden;
+}
+.photo-data-description.cat_0 {
+    border-color: #00AC35;
+}
+.photo-data-description.cat_1 {
+    border-color: #ff5b47;
+}
+
+/* Контейнер кнопок решения, указывать ли данные фотографии. */
+.window-photo-data .decide-buttons {
+    display: flex;
+    font-size: 110%;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Кнопки решения, указывать ли данные фотографии. */
+.window-photo-data .decide-button {
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 110%;
+    padding: 15px;
+    transition: background 0.15s;
+}
+.window-photo-data .decide-button:hover {
+    cursor: pointer;
+}
+
+/* Кнопка отказа от указания данных. */
+.window-photo-data .decide-button.skip {
+    background: #a3a3a3;
+    margin-right: 10px;
+}
+
+/* Кнопка загрузки фотографии с указанными данными на сервер. */
+.profile-form-0 .window-photo-data .decide-button.specify {
+    background: #00AC35;
+    width: 250px;
+}
+.profile-form-1 .window-photo-data .decide-button.specify {
+    background: #ff5b47;
+    width: 250px;
+}
+
+/* Наведение и фокус на кнопке загрузки на сервер. */
+.profile-form-0 .window-photo-data .decide-button.specify:hover {
+    background: #00BE39;
+}
+.profile-form-0 .window-photo-data .decide-button.specify:focus {
+    background: #00A030;
+}
+.profile-form-1 .window-photo-data .decide-button.specify:hover {
+    background: #FF7F6E;
+}
+.profile-form-1 .window-photo-data .decide-button.specify:focus {
+    background: #E76C5B;
+}
+
+/* Наведение и фокус на кнопке пропуска указания данных фотографии. */
+.window-photo-data .decide-button.skip:hover {
+    background: #b3b3b3;
+}
+.window-photo-data .decide-button.skip:focus {
+    background: #979797;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Окно формы: Загрузка. */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/* Само окно. */
+.window-loading {
+    width: calc(100% - 48px);
+    height: calc(100% - 48px);
+    display: none; /* flex */
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Иконка загрузки. */
+.window-loading .loading-icon {
+    font-size: 550%;
+    margin: 0 auto;
+}
+
+/* Пояснительный текст к загрузке. */
+.window-loading div {
+    margin-top: 15px;
+    font-size: 130%;
+}
+
+/* Выделение жирным текстом. */
+.window-loading div span {
+    font-family: OpenSansBold, sans-serif;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Окно формы: Ошибка. */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/* Само окно. */
+.window-error {
+    border-color: #ffb424 !important;
+    background: #FFF9E1 !important;
+    color: #ffb424 !important;
+    width: calc(100% - 48px);
+    height: calc(100% - 48px);
+    display: none; /* flex */
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Иконка ошибки. */
+.window-error .error-icon {
+    font-size: 550%;
+    margin: 0 auto;
+}
+
+/* Пояснительный текст ошибки. */
+.window-error div {
+    margin-top: 15px;
+    font-size: 130%;
+}
+
+/* Выделение жирным текстом. */
+.window-error div span {
+    font-family: OpenSansBold, sans-serif;
+}
+
+/* Кнопка "Еще раз". */
+.window-error button {
+    width: 200px;
+    margin: 20px auto 0;
+    background: #ffb424;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 110%;
+    padding: 15px;
+    transition: background 0.15s;
+}
+
+/* Взаимодействие с кнопкой "Еще раз". */
+.window-error button:hover {
+    background: #FFC353;
+    cursor: pointer;
+}
+.window-error button:focus {
+    background: #F0B74E;
+}
+
+/* ================================================================================================================== */
+/* Всплывающее окно выбора места съемки на карте. */
+/* ================================================================================================================== */
+
+/* Всплывающее окно с картой. */
+.profile-form-map-popup {
+    width: 90%;
+    height: 80vh;
+    background: #fff;
+    margin: 0 auto;
+    min-width: 803px;
+}
+
+/* Google Maps карта. */
+.profile-form-map-popup-map {
+    height: calc(100% - 102px);
+    clear: both;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Верхняя панель. */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/* Верхняя панель окна с полем поиска и кнопками. */
+.profile-form-map-popup-top {
+    height: 50px;
+    overflow: hidden;
+    padding: 15px;
+}
+
+/* --------------------------------------------------------------------------------------- */
+/* Верхняя панель - левая часть (поиск мест). */
+/* --------------------------------------------------------------------------------------- */
+
+/* Левая панель с полем поиска мест. */
+.map-popup-search-form {
+    float: left;
+    display: flex;
+    height: 100%;
+}
+
+/* Поле поиска. */
+.map-popup-search-field {
+    border: 2px solid #ccc;
+    padding-left: 15px;
+    font-size: 110%;
+    outline: none;
+    color: #333;
+    width: 320px;
+}
+
+/* Кнопка "Найти" и ее состояния. */
+.map-popup-search-field-button {
+    position: relative;
+    left: -2px;
+    border: 2px solid #ccc;
+    color: #333;
+    background: #ebebeb;
+    font-size: 110%;
+    width: 55px;
+    outline: none;
+    text-align: center;
+    transition: border-color 0.15s;
+}
+.map-popup-search-field-button:hover {
+    cursor: pointer;
+    border: 2px solid #a9a9a9;
+}
+
+/* --------------------------------------------------------------------------------------- */
+/* Верхняя панель - правая часть (управляющие кнопки). */
+/* --------------------------------------------------------------------------------------- */
+
+/* Правая панель с кнопками. */
+.profile-form-map-popup-controls {
+    float: right;
+    display: flex;
+    height: 100%;
+}
+
+/* Общий стиль для кнопок. */
+.map-popup-button {
+    font-size: 110%;
+    color: #fff;
+    outline: none;
+    border: none;
+    text-align: center;
+    transition: background 0.15s;
+}
+.map-popup-button:hover {
+    cursor: pointer;
+}
+
+/* Кнопка "Отмена" и ее состояния. */
+.map-popup-button.cancel {
+    background: #a3a3a3;
+    margin-right: 10px;
+    width: 110px;
+}
+.map-popup-button.cancel:hover {
+    background: #b3b3b3;
+}
+.map-popup-button.cancel:focus {
+    background: #979797;
+}
+
+/* Кнопка "Готово!". */
+.map-popup-button.apply {
+    width: 250px;
+}
+.map-popup-button.apply.cat_0 {
+    background: #00AC35;
+}
+.map-popup-button.apply.cat_1 {
+    background: #ff5b47;
+}
+
+/* Состояния кнопки "Готово!". */
+.map-popup-button.apply.cat_0:hover {
+    background: #00BE39;
+}
+.map-popup-button.apply.cat_0:focus {
+    background: #00A030;
+}
+.map-popup-button.apply.cat_1:hover {
+    background: #FF7F6E;
+}
+.map-popup-button.apply.cat_1:focus {
+    background: #E76C5B;
+}
+
+/* Кнопка "Готово!", если маркер не указан. */
+.map-popup-button.apply.no-marker.cat_0 {
+    background: rgba(0, 172, 53, 0.23);
+    cursor: not-allowed;
+}
+.map-popup-button.apply.no-marker.cat_1 {
+    background: rgba(255, 91, 71, 0.22);
+    cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------------------- */
+/* Поясняющая полоска. */
+/* --------------------------------------------------------------------------------------- */
+.profile-form-map-popup-desc {
+    height: 20px;
+    font-size: 70%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #fff;
+    border-top: 1px solid #ececec;
+    border-bottom: 1px solid #ccc;
+    color: #333;
+}
+
+/* ================================================================================================================== */
+/* Блок загруженной фотографии. */
+/* ================================================================================================================== */
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Контейнер загруженной фотографии. */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/* Сам блок. */
+.profile-photo-container {
+    width: 100%;
+    height: 350px;
+    position: relative;
+    top: -27px;
+    border: 1px solid rgba(34,36,38,.15);
+    box-shadow: 0 1px 2px 0 rgba(1, 1, 1, 0.09);
+    transition: box-shadow 0.15s, border-color 0.15s;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+/* Наведение на блок фотографии участника. */
+.profile-photo-img-container:hover {
+    cursor: pointer;
+}
+.profile_0_section .profile-photo-container:hover {
+    border-color: rgba(0, 172, 53, 0.31);
+    box-shadow: 0 1px 6px 1px rgba(0, 172, 53, 0.31);
+}
+.profile_1_section .profile-photo-container:hover {
+    border-color: rgba(255, 91, 71, 0.31);
+    box-shadow: 0 1px 6px 1px rgba(255, 91, 71, 0.31);
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Контейнер изображения загруженной фотографии. */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/* Контейнер изображения фотографии участника. */
+.profile-photo-img-container {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    overflow: hidden;
+    background: #fff;
+    height: 275px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 1px solid #DEDEDE;
+}
+
+/* Изображение фотографии участника. */
+.profile-photo-img {
+    display: block;
+    max-width: 100%;
+    max-height: 275px;
+    margin: 0 auto;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Статистика и кнопки управления загруженной фотографией. */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/* Блок с данными фотографии участника. */
+.profile-photo-data-container {
+    height: 75px;
+    width: 100%;
+    overflow: auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: #fff;
+}
+
+/* --------------------------------------------------------------------------------------- */
+/* Статистика. */
+/* --------------------------------------------------------------------------------------- */
+
+/* Статистика фотографии и кнопка "Поделиться". */
+.profile-photo-stats-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 350px;
+}
+
+/* Кнопка "Поделиться" своей фотографией. */
+.profile-photo-share {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 120%;
+    text-align: center;
+    line-height: 40px;
+    border: 1px solid #000;
+    transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+.profile-photo-share:hover {
+    cursor: pointer;
+    color: #fff !important;
+}
+.profile_0_section .profile-photo-share {
+    color: #00AC35;
+    border-color: #00AC35;
+}
+.profile_1_section .profile-photo-share {
+    color: #ff5b47;
+    border-color: #ff5b47;
+}
+.profile_0_section .profile-photo-share:hover {
+    background: #00AC35;
+}
+.profile_1_section .profile-photo-share:hover {
+    background: #ff5b47;
+}
+
+/* Цвета лайков и позиции в топе фотографии пользователя. */
+.profile_0_section .profile-photo-data-container {
+    color: #00AC35;
+}
+.profile_1_section .profile-photo-data-container {
+    color: #ff5b47;
+}
+
+/* Количество лайков и позиция в топе фотографии пользователя. */
+.profile-photo-stats span {
+    padding-left: 15px;
+}
+.profile-photo-stats  {
+    font-size: 150%;
+}
+
+/* --------------------------------------------------------------------------------------- */
+/* Кнопки управления. */
+/* --------------------------------------------------------------------------------------- */
+
+/* Кнопки управления фотографией. */
+.profile-photo-controls {
+    display: flex;
+    justify-content: space-around;
+    width: 60px;
+}
+
+/* Кнопки "Удалить"/"Редактировать". */
+.profile-photo-remove, .profile-photo-edit {
+    color: #a3a3a3;
+    width: 25px;
+    text-align: center;
+    transition: color 0.15s;
+}
+.profile-photo-remove:hover, .profile-photo-edit:hover {
+    cursor: pointer;
+    color: #333;
+}

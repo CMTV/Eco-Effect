@@ -1,0 +1,62 @@
+/* ================================================================================================================== */
+/* Верхнее меню. */
+/* ================================================================================================================== */
+/* Логотип. */
+#logotype {
+    width: 60px;
+    height: 60px;
+    margin-top: 15px;
+}
+
+#index-link {
+    text-decoration: none;
+}
+
+/* Название сайта. */
+#site-title {
+    display: inline;
+    color: #00AC35;
+    font-weight: 300;
+    font-size: 180%;
+    position: relative;
+    top: -20px;
+    left: 10px;
+}
+
+#top-menu {
+    float: right;
+    height: 50px;
+    display: flex;
+    margin-top: 20px;
+}
+
+/* Кнопка верхнего меню. */
+.tm-button {
+    height: 50px;
+    width: 120px;
+    line-height: 50px;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    transition: background 0.15s, color 0.15s;
+}
+.tm-button:hover {
+    color: #00AC35;
+    cursor: pointer;
+}
+.tm-button.tm-active {
+    color: #00AC35;
+    background: rgba(0, 172, 53, 0.14);
+}
+
+/* Кнопка "Мой профиль" */
+.tm-button.tm-profile {
+    width: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.tm-button.tm-profile img {
+    border-radius: 50%;
+    margin-right: 10px;
+}

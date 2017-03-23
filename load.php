@@ -26,11 +26,13 @@ $db->set_charset('utf8');
 // =====================================================================================================================
 // Подгрузка необходимых классов.
 // =====================================================================================================================
+require_once(ABSPATH . 'classes/Size.php');
 require_once(ABSPATH . 'classes/Redirect.php');
 require_once(ABSPATH . 'classes/Utils.php');
 require_once(ABSPATH . 'classes/VK.php');
 require_once(ABSPATH . 'classes/Photo.php');
 require_once(ABSPATH . 'classes/User.php');
+require_once(ABSPATH . 'classes/PhotoData.php');
 
 // =====================================================================================================================
 // Инициализаия менеджера сессий и объявление глобальной перменной $current_user.
@@ -40,3 +42,4 @@ $session = new Session();
 
 /** @var User|null $current_user */
 $current_user = ($session->user)?:null;
+if($current_user) $session->sync_user();

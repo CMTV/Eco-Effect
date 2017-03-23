@@ -67,7 +67,11 @@ class Session {
     public function sync_user() {
         global $current_user;
 
-        if($this->is_authorized())
+        if($this->is_authorized()) {
             $this->user = $current_user = User::get_user($_SESSION['current_user']->uid);
+            if($current_user->is_banned) {
+                Redirect::redirect_to(REDIRECT_LOGOUT);
+            }
+        }
     }
 }

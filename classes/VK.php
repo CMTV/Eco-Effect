@@ -54,4 +54,63 @@ class VK {
 
         return $vk_data;
     }
+
+    /**
+     * Получение ссылки "Поделиться" для данной фотографии.
+     *
+     * @param int|Photo $photo Идентификатор или объект фотографии, которой надо поделиться.
+     * @return string Ссылка на фотографию.
+     */
+    public static function get_share_link($photo): string {
+
+        if(is_int($photo)) {
+            $photo = Photo::get_photo_by_id($photo);
+        }
+
+        if(!$photo) {
+            return '';
+        }
+
+        $user = User::get_user($photo->uid);
+
+        $url = SITE_URL . '?photo=' . $photo->id;
+        $title = $user->full_name() . '. Проголосовать за фото.';
+        $description = 'Проголосуйте за мою фотографию на конкурсе ЭКО-ЭФФЕКТ!';
+        $image = $photo->thumbnail_url;
+
+        return "
+            <script>
+                document.write(
+                    VK.Share.button({
+                        url: \"$url\",
+                        title: '$title',
+                        description: '$description',
+                        image: '$image',
+                        noparse: true
+                    }, {
+                        type: 'custom',
+                        text: '<div class=\"profile-photo-share\" title=\"Поделиться фотографией!\"><i class=\"fa fa-bullhorn\" aria-hidden=\"true\"></i></div>'
+                    })
+                );
+            </script>
+        ";
+    }
+
+    /**
+     * Получение информации о лайках на данную фотографию.
+     *
+     * @param int $photo_id Идентификатор фотографии в базе данных.
+     *
+     * @return string Ответ ВКонтакте.
+     */
+    public static function get_votes(int $photo_id) : string {
+        $v =            VK_VERSION;
+        $method_name =  'likes.getList';
+        $page_url =     urlencode(SITE_URL . 'index.php?photo=' . $photo_id . '&salt=' . VK_WIDGETS_SALT);
+        $parameters =  "type=sitepage&owner_id=" . VK_CLIENT_ID . "&v=$v&page_url=$page_url";
+
+        $vk_data = file_get_contents("https://api.vk.com/method/$method_name?$parameters");
+
+        return $vk_data;
+    }
 }

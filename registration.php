@@ -4,7 +4,7 @@
 require_once('load.php');
 
 if($session->is_authorized()) {
-    Redirect::redirect_to(REDIRECT_PROFILE);
+    Redirect::redirect_to(REDIRECT_INDEX);
 }
 
 if(!($code = $_GET['code'])) {
@@ -37,25 +37,27 @@ if(User::is_user_exists($vk_user_data->id)) {
     if(User::is_user_banned($vk_user_data->id)) {
         Error_Handler::error('Вы заблокированы и не можете участвовать в конкурсе!', null, false);
     }
-    User::update_user(
-        $vk_user_data->id,
-        $vk_user_data->first_name,
-        $vk_user_data->last_name,
-        $vk_user_data->domain,
-        $vk_user_data->has_photo,
-        ($vk_user_data->has_photo) ? $vk_user_data->photo_50 : AVATAR_DEFAULT_URL
-    );
+
+    User::edit_user($vk_user_data->id, [
+        'first_name'    => $vk_user_data->first_name,
+        'second_name'   => $vk_user_data->last_name,
+        'domain'        => $vk_user_data->domain,
+        'has_avatar'    => $vk_user_data->has_photo,
+        'avatar'        => ($vk_user_data->has_photo ? $vk_user_data->photo_50 : AVATAR_DEFAULT_URL)
+    ]);
 } else {
-    User::create_user(
-        $vk_user_data->id,
-        $vk_user_data->first_name,
-        $vk_user_data->last_name,
-        $vk_user_data->domain,
-        $vk_user_data->has_photo,
-        ($vk_user_data->has_photo) ? $vk_user_data->photo_50 : AVATAR_DEFAULT_URL
-    );
+    $new_user = new User();
+
+    $new_user->uid =            $vk_user_data->id;
+    $new_user->first_name =     $vk_user_data->first_name;
+    $new_user->second_name =    $vk_user_data->last_name;
+    $new_user->domain =         $vk_user_data->domain;
+    $new_user->has_avatar =     $vk_user_data->has_photo;
+    $new_user->avatar =         ($vk_user_data->has_photo ? $vk_user_data->photo_50 : AVATAR_DEFAULT_URL);
+
+    User::create_user($new_user);
 }
 
 $session->init(User::get_user($vk_user_data->id));
 
-Redirect::redirect_to(REDIRECT_PROFILE);
+Redirect::redirect_to(REDIRECT_INDEX);

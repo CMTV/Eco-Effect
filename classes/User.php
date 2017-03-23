@@ -1,6 +1,6 @@
 <?php
 /** Путь к стандартной аватаре участника. */
-define('AVATAR_DEFAULT_URL', SITE_URL . 'images/default_avatar.png');
+define('AVATAR_DEFAULT_URL', SITE_URL . 'images/default_avatar.gif');
 
 /** Класс, содержащий данные участника конкурса. */
 class User {
@@ -63,6 +63,16 @@ class User {
      */
     public $photo_1 = null;
 
+    /** @return string Полное имя участника конкурса. */
+    public function full_name() {
+        return $this->first_name . ' ' . $this->second_name;
+    }
+
+    /**
+     * Пометка в базе данных о том, что пользователь загрузил фотографию в данной номинации.
+     *
+     * @param int $category Номинация загруженной фотографии.
+     */
     public function loaded_photo(int $category) {
         global $db;
 
@@ -70,6 +80,66 @@ class User {
             $db->query("UPDATE `users` SET `has_photo_0` = 1 WHERE `uid` = $this->uid");
         elseif($category == CATEGORY_TRASH_YES)
             $db->query("UPDATE `users` SET `has_photo_1` = 1 WHERE `uid` = $this->uid");
+
+        if($db->error) {
+            Error_Handler::error('Не удалось указать, что участник загрузил фотографию!', $db->error);
+        }
+    }
+
+    /**
+     * Пометка в базе данных о том, что пользователь удалил фотографию в данной номинации.
+     *
+     * @param int $category Номинация удаленной фотографии.
+     */
+    public function removed_photo(int $category) {
+        global $db;
+
+        if($category == CATEGORY_TRASH_NO)
+            $db->query("UPDATE `users` SET `has_photo_0` = 0 WHERE `uid` = $this->uid");
+        elseif($category == CATEGORY_TRASH_YES)
+            $db->query("UPDATE `users` SET `has_photo_1` = 0 WHERE `uid` = $this->uid");
+
+        if($db->error) {
+            Error_Handler::error('Не удалось указать, что участник удалил фотографию!', $db->error);
+        }
+    }
+
+    /**
+     * Возвращает фотографию пользователя в заданной категории. Если фотографии в категории нет, то возвращает null.
+     *
+     * @param int $category Номинация загруженной фотографии.
+     * @return null|Photo Объект фотографии пользователя
+     */
+    public function get_photo(int $category): ?Photo {
+        if($category == CATEGORY_TRASH_NO) {
+            if($this->has_photo_0) {
+                return $this->photo_0;
+            } else {
+                return null;
+            }
+        } elseif($category == CATEGORY_TRASH_YES) {
+            if($this->has_photo_1) {
+                return $this->photo_1;
+            } else {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Есть ли у участника загруженная фотография в данной категории.
+     *
+     * @param int $category Номинация загруженной фотографии.
+     * @return bool true - фотография есть, false - фотографии нет или неверная категория.
+     */
+    public function has_self_photo(int $category): bool {
+        if($category == CATEGORY_TRASH_NO) {
+            return $this->has_photo_0;
+        } elseif($category == CATEGORY_TRASH_YES) {
+            return $this->has_photo_1;
+        }
+        return false;
     }
 
     /**
@@ -100,7 +170,7 @@ class User {
     /**
      * Получение ссылки на VK профиль пользователя.
      *
-     * @param user|int $user Объект участника конкурса или его идентификатор.
+     * @param User|int $user Объект участника конкурса или его идентификатор.
      *
      * @return string|null Может вернуть null, если переданный параметр не является ни идентификатором, ни объектом
      * пользователя, а также в том случае, если по данному идентификатору пользователь найден не был.
@@ -127,8 +197,6 @@ class User {
     public static function get_user(int $uid): ?User {
         global $db;
 
-        $user = new User();
-
         $user_result = $db->query(
             "SELECT * FROM `users` WHERE `uid` = $uid"
         );
@@ -143,17 +211,34 @@ class User {
 
         $user_data = $user_result->fetch_assoc();
 
-        $user->uid =            $uid;
-        $user->first_name =     $user_data['first_name'];
-        $user->second_name =    $user_data['second_name'];
-        $user->domain =         $user_data['domain'];
-        $user->is_banned =      $user_data['is_banned'];
-        $user->has_avatar =     $user_data['has_avatar'];
-        $user->avatar =         $user_data['avatar'];
-        $user->has_photo_0 =    $user_data['has_photo_0'];
-        $user->has_photo_1 =    $user_data['has_photo_1'];
-        $user->photo_0 =        Photo::get_photo($uid, CATEGORY_TRASH_NO);
-        $user->photo_1 =        Photo::get_photo($uid, CATEGORY_TRASH_YES);
+        return self::get_user_from_row($user_data);
+    }
+
+    /**
+     * Создание объекта участника из строки-массива, полученной из базы даных.
+     *
+     * @param array $user_row Строка-массив из базы данных.
+     * @param bool $include_photos Включать ли получение фотографий данного участника из базы данных.
+     *
+     * @return User Объект участника конкурса.
+     */
+    public static function get_user_from_row(array $user_row, bool $include_photos = true) {
+        $user = new User();
+
+        $user->uid =            $user_row['uid'];
+        $user->first_name =     $user_row['first_name'];
+        $user->second_name =    $user_row['second_name'];
+        $user->domain =         $user_row['domain'];
+        $user->is_banned =      $user_row['is_banned'];
+        $user->has_avatar =     $user_row['has_avatar'];
+        $user->avatar =         $user_row['avatar'];
+        $user->has_photo_0 =    $user_row['has_photo_0'];
+        $user->has_photo_1 =    $user_row['has_photo_1'];
+
+        if($include_photos) {
+            $user->photo_0 =        Photo::get_photo($user->uid, CATEGORY_TRASH_NO);
+            $user->photo_1 =        Photo::get_photo($user->uid, CATEGORY_TRASH_YES);
+        }
 
         return $user;
     }
@@ -161,32 +246,25 @@ class User {
     /**
      * Создание пользователя и добавление его в базу данных.
      *
-     * @param int $uid Идентификатор ВКонтакте пользователя.
-     * @param string $first_name Имя пользователя.
-     * @param string $second_name Фамилия пользователя.
-     * @param string $domain Короткое доменное имя пользователя.
-     * @param bool $has_avatar Есть ли у пользователя аватара. При указании true необходимо в обязательном порядке
-     * указать параметр $avatar.
-     * @param string|null $avatar Ссылка на аватару.
+     * @param User $new_user Объект добавляемого пользователя.
      */
-    public static function create_user(int $uid, string $first_name, string $second_name, string $domain, bool $has_avatar, string $avatar = AVATAR_DEFAULT_URL) {
+    public static function create_user(User $new_user) {
         global $db;
 
-        $first_name =     $db->real_escape_string($first_name);
-        $second_name =    $db->real_escape_string($second_name);
-        $domain =         $db->real_escape_string($domain);
-
-        $has_avatar = (int)$has_avatar;
-
-        if($has_avatar) {
-            $avatar = $db->real_escape_string($avatar);
-        }
-
-        $is_banned = $has_photo_0 = $has_photo_1 = 0;
+        $uid =          $new_user->uid;
+        $first_name =   $db->real_escape_string($new_user->first_name);
+        $second_name =  $db->real_escape_string($new_user->second_name);
+        $domain =       $db->real_escape_string($new_user->domain);
+        $is_banned =    (int)($new_user->is_banned ?: false);
+        $has_avatar =   $new_user->has_avatar;
+        $avatar =       $db->real_escape_string($new_user->avatar);
+        $has_photo_0 =  (int)($new_user->has_photo_0 ?: false);
+        $has_photo_1 =  (int)($new_user->has_photo_1 ?: false);
 
         $db->query(
-            "INSERT INTO `users` (`uid`, `first_name`, `second_name`, `is_banned`, `domain`, `has_avatar`, `avatar`, `has_photo_0`, `has_photo_1`) "
-          . "VALUES ($uid, '$first_name', '$second_name', $is_banned, '$domain', $has_avatar, '$avatar', $has_photo_0, $has_photo_1)"
+            "INSERT INTO `users` ".
+            "(`uid`, `first_name`, `second_name`, `domain`, `is_banned`, `has_avatar`, `avatar`, `has_photo_0`, `has_photo_1`) VALUES ".
+            "($uid, '$first_name', '$second_name', '$domain', $is_banned, $has_avatar, '$avatar', $has_photo_0, $has_photo_1)"
         );
 
         if($db->error) {
@@ -198,6 +276,7 @@ class User {
      * Проверка, имеется ли пользователь в базе данных (был ли уже зарегистрирован).
      *
      * @param int $uid Идентификатор ВКонтакте участника конкурса.
+     *
      * @return bool true, если пользователь был зарегистрирован и false, если это новый участник.
      */
     public static function is_user_exists(int $uid): bool {
@@ -237,32 +316,37 @@ class User {
      * Обновление данных участника конкурса.
      *
      * @param int $uid Идентификатор ВКонтакте пользователя.
-     * @param string $first_name Имя пользователя.
-     * @param string $second_name Фамилия пользователя.
-     * @param string $domain Короткое доменное имя пользователя.
-     * @param bool $has_avatar Есть ли у пользователя аватара. При указании true необходимо в обязательном порядке
-     * указать параметр $avatar.
-     * @param string $avatar Ссылка на аватару.
+     * @param array $data Массив данных участника вида: [ 'поле_класса' => 'новое_значение', ...]
      */
-    public static function update_user(int $uid, string $first_name, string $second_name, string $domain, bool $has_avatar, string $avatar = AVATAR_DEFAULT_URL) {
+    public static function edit_user(int $uid, array $data) {
         global $db;
 
-        $first_name =   $db->real_escape_string($first_name);
-        $second_name =  $db->real_escape_string($second_name);
-        $domain =       $db->real_escape_string($domain);
-
-        $has_avatar = (int)$has_avatar;
-
-        if($has_avatar) {
-            $avatar = $db->real_escape_string($avatar);
-        }
-
         $db->query(
-            "UPDATE `users` SET `first_name` = '$first_name', `second_name` = '$second_name', `domain` = '$domain', `has_avatar` = $has_avatar, `avatar`= '$avatar' WHERE `uid` = $uid"
+            "UPDATE `users` SET " . Utils::data_to_update_string(Utils::escape_data($data)) . ' '.
+            "WHERE `uid` = $uid"
         );
 
         if($db->error) {
             Error_Handler::error('Не удалось обновить данные участника!', $db->error);
         }
+    }
+
+    /**
+     * Получение количества участников конкурса.
+     *
+     * @return int Количество участников конкурса.
+     */
+    public static function get_users_amount() : int {
+        global $db;
+
+        $result = $db->query(
+            "SELECT COUNT(*) FROM `users`"
+        );
+
+        if($db->error) {
+            Error_Handler::error('Ошибка при получении общего количества участников конкурса!', $db->error);
+        }
+
+        return ($result->fetch_array())[0];
     }
 }

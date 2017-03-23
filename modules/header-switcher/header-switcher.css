@@ -1,0 +1,115 @@
+/* ================================================================================================================== */
+/* Задние фоны страницы. */
+/* ================================================================================================================== */
+
+/* Контейнер всех фонов. */
+#top-backgrounds {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 700px;
+    overflow: hidden;
+    z-index: -1;
+}
+
+/* Фон перекрытия, освещающий картинку. */
+#background-overlay {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background:  linear-gradient(to bottom,rgba(255,255,255, 0.6) 0%, rgba(255,255,255, 0.9) 50%, #EDF0ED);
+    z-index: -1;
+}
+
+/* Изображение планеты. */
+#background-image {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: url('/images/globe_two_sided_small.png') no-repeat 50%;
+    animation: background-rotating 80s infinite linear;
+    z-index: -1;
+}
+
+/* Глобальный градиент из белого в фон страницы. */
+#background-linear-gradient {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #fff 60%, #EDF0ED);
+    z-index: -1;
+}
+
+@keyframes background-rotating {
+    from {
+        transform: rotateZ(0deg);
+    }
+    to {
+        transform: rotateZ(360deg);
+    }
+}
+
+/* ================================================================================================================== */
+/* Переключатель шапок. */
+/* ================================================================================================================== */
+/* Контейнер шапок. */
+.headers {
+    height: 344px;
+}
+
+/* Отдельная шапка. */
+.header {
+    display: none;
+}
+
+/* Основная шапка, которая обязательно изначально видна. */
+.header-must-have {
+    display: block;
+}
+
+/* Ссылки в шапке. */
+.header a {
+    text-decoration: none;
+    color: #00AC35;
+}
+.header a:hover {
+    text-decoration: underline;
+}
+
+/* ================================================================================================================== */
+/* Спонсоры. */
+/* ================================================================================================================== */
+
+/* Контейнер спонсоров + заголовка. */
+.sponsors {
+    float: right;
+    width: 280px;
+}
+
+/* Заголовок контейнера спонсоров. */
+.sponsors h2 {
+    margin: 0 0 0 10px;
+}
+
+/* Контейнер спонсоров. */
+.sponsors-container {
+    margin: 0 auto;
+    max-height: 314px;
+    overflow: auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Отдельный спонсор. */
+.sponsor {
+    padding: 5px;
+    background: #fff;
+    border-radius: 3px;
+    border: 1px solid #DEDEDE;
+    margin: 10px;
+}

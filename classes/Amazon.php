@@ -96,4 +96,65 @@ class Amazon {
 
         return $upload_result['ObjectURL'];
     }
+
+    /**
+     * Удаление фотографии участника из Amazon S3.
+     *
+     * @param int $uid Идентификатор ВКонтакте пользователя.
+     * @param int $category Идентификатор номинации: 0 - Мусору "НЕТ", 1 - Мусор "ЕСТЬ".
+     */
+    public function remove_photo(int $uid, int $category) {
+        $user = User::get_user($uid);
+
+        if(!$user) {
+            Error_Handler::error('Невозможно удалить фото! Пользователя не существует!', null);
+        }
+
+        $bucket = BUCKET;
+
+        $photo_folder = (($category) ? BUCKET_TRASH_YES : BUCKET_TRASH_NO) . '/';
+        $thumb_folder = (($category) ? BUCKET_TRASH_YES_THUMB : BUCKET_TRASH_NO_THUMB) . '/';
+
+        if($category) {
+            $filename = end(explode('/', $user->photo_1->photo_url));
+
+            try {
+                $this->client->deleteObject([
+                    'Bucket' => $bucket,
+                    'Key' => $photo_folder . $filename
+                ]);
+
+                if($user->photo_1->has_thumbnail) {
+                    $thumb_filename = end(explode('/', $user->photo_1->thumbnail_url));
+
+                    $this->client->deleteObject([
+                        'Bucket' => $bucket,
+                        'Key' => $thumb_folder . $thumb_filename
+                    ]);
+                }
+            } catch (Exception $e) {
+                Error_Handler::error('Не удалось удалить фото из облака Amazon!', $e->getMessage());
+            }
+        } else {
+            $filename = end(explode('/', $user->photo_0->photo_url));
+
+            try {
+                $this->client->deleteObject([
+                    'Bucket' => $bucket,
+                    'Key' => $photo_folder . $filename
+                ]);
+
+                if($user->photo_0->has_thumbnail) {
+                    $thumb_filename = end(explode('/', $user->photo_0->thumbnail_url));
+
+                    $this->client->deleteObject([
+                        'Bucket' => $bucket,
+                        'Key' => $thumb_folder . $thumb_filename
+                    ]);
+                }
+            } catch (Exception $e) {
+                Error_Handler::error('Не удалось удалить фото из облака Amazon!', $e->getMessage());
+            }
+        }
+    }
 }
